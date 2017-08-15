@@ -9,6 +9,7 @@ struct node
 };
 
 node* insert(node*,int);
+node* append(node*,int);
 node* pos(node*,int);
 node* find(node*,int);
 node* remove(node*,node*);
@@ -17,11 +18,14 @@ void print(node*);
 int main(){
 	node* head = new node;//sentinela
 	head->next = NULL;
-	insert(head,10);
-	insert(head,20);
-	insert(head,30);
-	insert(head,40);
+
+	append(head,10);
+	append(head,20);
+	append(head,30);
+	append(head,40);
+
 	print(head);
+
 	return 0;
 }
 
@@ -30,6 +34,14 @@ node* insert(node* curr,int v){
 	n->val = v;
 	n->next = curr->next;
 	curr->next = n;
+	return curr;
+}
+node* append(node* head,int v){
+	node* curr = head;
+	while(curr->next != NULL){
+		curr = curr->next;
+	}
+	insert(curr,v);
 	return curr;
 }
 
