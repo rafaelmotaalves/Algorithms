@@ -12,23 +12,24 @@ node* insert(node*,int);
 node* append(node*,int);
 node* pos(node*,int);
 node* find(node*,int);
-node* remove(node*,node*);
+node* remove(node*);
 void print(node*);
 
 int main(){
 	node* head = new node;//sentinela
 	head->next = NULL;
 
-	append(head,10);
-	append(head,20);
-	append(head,30);
-	append(head,40);
+	node* a =insert(head,5);
+	insert(head,10);
+	insert(head,20);
+	insert(head,40);
+
+	remove(a);
 
 	print(head);
 
 	return 0;
 }
-
 node* insert(node* curr,int v){
 	node* n = new node;
 	n->val = v;
@@ -36,13 +37,13 @@ node* insert(node* curr,int v){
 	curr->next = n;
 	return curr;
 }
+
 node* append(node* head,int v){
 	node* curr = head;
 	while(curr->next != NULL){
 		curr = curr->next;
 	}
-	insert(curr,v);
-	return curr;
+	return insert(curr,v);
 }
 
 node* pos(node* head,int pos){
@@ -54,6 +55,7 @@ node* pos(node* head,int pos){
 	}
 	return curr;
 }
+
 node* find(node* head,int v){
 	node* curr = head;
 	while(curr->next != NULL && curr->next->val != v){
@@ -62,7 +64,7 @@ node* find(node* head,int v){
 	return curr;
 }
 
-node* remove(node* head,node* curr){
+node* remove(node* curr){
 	node* pointer = curr->next;
 	curr->next = pointer->next;
 	delete pointer;
