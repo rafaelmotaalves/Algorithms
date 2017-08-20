@@ -1,11 +1,11 @@
 #include <iostream>
 
 using namespace std;
-	struct Node
-	{
-		int val;
-		Node* next;
-	};
+
+struct Node{
+	int val;
+	Node* next;
+};
 
 class Stack{
 private:
@@ -14,13 +14,14 @@ private:
 
 public:
 	Stack(){
-		this->top = new Node;
+		this->top = new Node;//sentinela
 		this->top->next = NULL;
 	}
 
 	int getTopVal(){
 		return this->top->next->val;
 	}
+
 	Node* push(int v){
 		Node* newNode = new Node;
 		newNode->val = v;
@@ -36,6 +37,7 @@ public:
 		return top;
 
 	}
+
 	void print(){
 		Node* curr = top->next;
 		while(curr != NULL){
@@ -54,7 +56,7 @@ private:
 
 public:
 	Queue(){
-		this->front = new Node;
+		this->front = new Node;//sentinela
 		this->front->next = NULL;
 		this->rear = this->front;
 	}
@@ -81,6 +83,7 @@ public:
 		}
 		return front;
 	}
+
 	void print(){
 		Node* curr = front->next;
 		while(curr != NULL){
@@ -93,11 +96,15 @@ public:
 };
 
 int main(){
-	Stack *memsec = new Stack();
-	Queue *buffer = new Queue();
+	Stack *memsec = new Stack();//memoria secundaria
+	Queue *buffer = new Queue();//buffer
 
 	string func;
-	int q,p,K,current=0,bf=0,cont=1,qtdnamem=0;
+	int q,p,K
+	int current=0;//valor que vai ser armazenado no pacote
+	int bf=0;//quantidade de pacotes no buffer
+	int cont=1;//quantidade de passos executados
+	int qtdnamem=0;//quantidade de pacotes da memoria
 
 	cin>>q;
 	cin>>p;
@@ -105,41 +112,38 @@ int main(){
 	while(cin>>func>>K){
 		
 		if(func == "RECV"){
-			for (int i= 0; i < K;i++){
+			for (int i = 0; i < K;i++){
 				if( bf < q ){
-					buffer->enqueue(current);
+					buffer->enqueue(current);//relega pacote ao buffer
 					bf++;
 				}else{
-					memsec->push(current);
+					memsec->push(current);//relega pacote a memoria
 					qtdnamem++;
 				}
 				current++;
 			}
 		}else{
 			    int aux = bf;
-				for(int i=0;i< K && i < aux; i++){
+				for(int i = 0;i< K && i < aux; i++){
 					cout << buffer->getFrontVal() <<" ";
-					buffer->dequeue();
+					buffer->dequeue();//remove pacotes do buffer
 					bf--;
 				}
 				cout<<endl;
 		}
 		
-		
-		
 		if( cont % p == 0){
-			int qtdrealocada=0;
-			for(int i= 0 ; i < (q - bf) && i < qtdnamem ; i ++){
+			int qtdrealocada=0;//quantidade de pacotes recuperados
+			for(int i = 0 ; i < (q - bf) && i < qtdnamem ; i++){
 				qtdrealocada++;
-				int x = memsec->getTopVal();
-				buffer->enqueue(x);
-				memsec->pop();
+				int x = memsec->getTopVal();//pega o valor do proximo pacote da memoria
+				buffer->enqueue(x);//copia para o buffer
+				memsec->pop();//remove da memoria
 			}
 			bf+=qtdrealocada;
 			qtdnamem -= qtdrealocada;
 		}
-		
-		
+
 		cont++;
 
 	}
