@@ -31,9 +31,34 @@ public:
 		this->parray[this->posicao] = v;
 		this->posicao++;
 	}
+	
+	void bubbleSort(){
+		for(int i = 0 ; i <= posicao ; i++){
+			for(int j=0 ; j<= posicao; j++){
+				if(parray[i]<parray[j]){
+					int aux = parray[i];
+					parray[i] = parray[j];
+					parray[j] = aux;
+				}
+			}
+		}
 
-	int getValor(int i){
-		return this->parray[i];
+	}
+
+	int binarySearch(int v){
+		int l = 0;
+		int r = posicao;
+		do{
+			int m = (l+r)/2;
+			if(parray[m] == v){
+				return m;
+			}else if(parray[m] < v){
+				l = m + 1;
+			}else{
+				r = m - 1;
+			}
+		}while(l<=r);
+		return -1;
 	}
 };
 
