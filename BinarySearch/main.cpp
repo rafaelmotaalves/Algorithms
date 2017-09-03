@@ -1,46 +1,34 @@
 #include <iostream>
 #include <cstdlib>
+#include "Sort.h"
 
 using namespace std;
 
-void bubbleSort(int array[],int size);
 int binarySearch(int v,int array[],int size);
 
 int main(){
-	int array[50];
+	int array[] = {90,40,30,70};
 
-	for(int i = 0 ; i < 50 ; i++){
-		array[i] = rand() % 100;
-	}
+	Sort s;
 
 	int size = sizeof(array)/sizeof(array[0]);
 
-	bubbleSort(array,size);
 
-	for(int i = 0; i < 50; i++){
+	s.mergeSort(array,size);
+
+	for(int i = 0; i <  size; i++){
 		cout << array[i] << " ";
 	}
 	cout<<endl;
 
-	cout << binarySearch(98,array,size);
+	cout << binarySearch(21,array,size);
 	return 0;
 }
 
-void bubbleSort(int array[] ,int size){
-	for(int i = 0;i < size; i++){
-		for(int j=0;j < size; j++ ){
-			if(array[i] < array[j]){
-				int aux = array[i];
-				array[i] = array[j];
-				array[j] = aux;
-			}
-		}
-	}
-}
 
 int binarySearch(int v,int array[],int size){
 	int l = 0;
-	int r = 49;
+	int r = size-1;
 	do{
 		int a = (l + r)/2;
 		if(array[a] == v){
