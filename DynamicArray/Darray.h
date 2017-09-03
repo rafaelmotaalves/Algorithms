@@ -58,13 +58,7 @@ public:
 		if(index == size){
 			doubleSize();
 		}
-		if(index == 0){
-			array[0] = v;
-			index++;
-			return;
-		}
-		int aux = index;
-		for(int i = 0; i < aux ; i++){
+		for(int i = 0; i < index ; i++){
 			if(array[i] > v){
 				insert(v,i);
 				return;			
@@ -106,6 +100,12 @@ public:
 		}while(l <= r);
 
 		return -1;
+	}
+
+	void print(){
+		for(int i = 0 ; i < index ; i++){
+			std::cout << array[i] << " ";
+		}
 	}
 
 
