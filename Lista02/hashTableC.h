@@ -22,6 +22,7 @@ public:
 
 	~HashTableC(){
 		delete[] table;
+		delete[] auxTable;
 	}
 
 	int hash0(int key){
@@ -32,26 +33,33 @@ public:
 		return (2 * (key % (this->size/2))) + 1;
 	}
 
-	int doubleHash(int key){
+	void insert(int key){
+		if((ocupation/size) >= 0.75){
+			reHash();
+		}
 		int hashV = hash0(key);
 		int hash1V = hash1(key);
 		while(auxTable[hashV]){
 			hashV = hashV + hash1V;
 			hashV = hashV % this->size;
-	
 		}
-		return hashV;
-	}
-
-	void insert(int key){
-		if((ocupation/size) >= 0.75){
-			reHash();
-		}
-		int i = doubleHash(key);
-		table[i] = key;
-		auxTable[i] = true;
+		table[hashV] = key;
+		auxTable[hashV] = true;
 		ocupation++;
 
+	}
+
+	int search(int key){
+		int hashV = hash0(key);
+		int hash1V = hash1(key);
+		while(auxTable[hashV]){
+			if(table[hashV] == key){
+				return hashV;
+			}
+			hashV = hashV + hash1V;
+			hashV = hashV % this->size;
+		}
+		return -1;
 	}
 
 	void reHash(){
@@ -76,15 +84,6 @@ public:
 		table = aux;
 		auxTable = aux2;
 	}
-	void printTable(){
-		for(int i = 0 ; i < size ; i++){
-			std::cout << "INDEX: " << i << std::endl;
-			if(auxTable[i]){
-				std::cout << table[i] << std::endl;
-			}
-		}
-	}
-
 
 };
 

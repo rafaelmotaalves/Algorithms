@@ -17,5 +17,7 @@ int main(){
 
 
 	htc->printTable();
+
+	cout << htc->search(43);
 	return 0;
 }
