@@ -1,32 +1,21 @@
 #include <bits/stdc++.h>
 #include "hashTableB.h"
 #include "hashTableA.h"
+#include "hashTableC.h"
 
 #define endl '\n';
 
 using namespace std;
 
 int main(){
-	HashTableB *htb = new HashTableB(2);
+	HashTableC *htc = new HashTableC(4);
 
-	htb->insert(9);
-	htb->insert(0);
-	htb->insert(4);
-
-
-	int *contB = new int() ;
+	htc->insert(10);
+	htc->insert(20);
+	htc->insert(43);
+	htc->insert(70);
 
 
-	htb->find(5 , contB);
-	htb->find(0 , contB);
-
-	cout << *contB;
-
-
-
-
-
-
-
+	htc->printTable();
 	return 0;
 }

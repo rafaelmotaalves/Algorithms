@@ -36,7 +36,7 @@ public:
 
 	int find(int key,int *x){
 		int i = hash(key);
-		return table[i].binarySearch(key);
+		return table[i].binarySearch(key,x);
 	}
 
 	void reHash(){
