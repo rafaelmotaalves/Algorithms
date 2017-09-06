@@ -7,7 +7,26 @@ using namespace std;
 int binarySearch(int v,int array[],int size);
 
 int main(){
-	int array[] = {90,40,30,70};
+	int array[] = {359,
+					966,
+					105,
+					115,
+					81,
+					255,
+					74,
+					236,
+					809,
+					205,
+					186,
+					939,
+					498,
+					763,
+					483,
+					326,
+					124,
+					706,
+					84,
+					1016};
 
 	Sort s;
 
@@ -21,7 +40,6 @@ int main(){
 	}
 	cout<<endl;
 
-	cout << binarySearch(21,array,size);
 	return 0;
 }
 

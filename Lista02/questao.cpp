@@ -41,50 +41,41 @@ public:
 
 	}
 
-	void quickSort(int  size){
-		qSort( 0 , size - 1);
-	} 
 
-	void qSort( int l , int r){
-		if(l<r){
-			int p = partition(l,r);
-			qSort(l,p-1);
-			qSort(p+1,r);
+	void insert(int v,int pos){
+		if(index < pos){
+			std::cout<<"invalid index\n";
+		}else{
+			if(index == size){
+				doubleSize();
+			}
+			int *a = new int[index];
+			for(int i = 0; i < index ; i++){
+				a[i] = array[i];
+			}
+			for(int i = pos ; i < index ; i++){
+				array[i+1] = a[i];
+			}
+			delete[] a;
+			array[pos] = v;
+			index++;
 		}
 	}
 
-	int partition (int l , int r){
-		int p = (l+r)/2;
-		int aux = array[l];
-		array[l] = array[p];
-		array[p] = array[l];
-		int i = l;
-		int j = r;
-		while(i < j){
-			while(i<=r && array[i] <= array[l]){
-				i++;
-			}
-			while(array[j] > array[l]){
-				j--;
-			}
-			if(i<j){
-				aux = array[i];
-				array[i] = array[j];
-				array[j] = aux;
-			}
-		}
-		aux = array[l];
-		array[l] = array[j];
-		array[j] = aux;
-		return j;
-	} 
 
-	void insertSorted(int value){
+	void insertSorted(int v){
 		if(index == size){
 			doubleSize();
 		}
-		append(value);
-		quickSort();
+		for(int i = 0; i < index ; i++){
+			if(array[i] > v){
+				insert(v,i);
+				return;			
+			}
+		}
+		array[index] = v;
+		index++;
+
 	}
 
 
@@ -114,17 +105,8 @@ public:
 				return i;
 			}
 		}
+		return -1;
 	}
-
-	void print(){
-		for(int i = 0 ; i < index ; i++){
-			std::cout << array[i] << " ";
-		}
-		if(index != 0 ){
-			std::cout << "\n";
-		}
-	}
-
 
 	int getSize(){
 		return size;
@@ -149,6 +131,7 @@ private:
 public:
 	HashTableA(int m){
 		this->size = m;
+		this->ocupation = 0;
 		this->table = new DynamicArray[size];
 	}
 
@@ -171,6 +154,9 @@ public:
 
 	int find(int key){
 		int i = hash(key);
+		if(table[i].getIndex() == 0){
+			return -1;
+		}
 		return table[i].search(key);
 	}
 
@@ -181,19 +167,12 @@ public:
 			int index = table[i].getIndex();
 			for(int j = 0; j< index ; j++){
 				int a = table[i].get(j);
-				aux[hash(a)].insertSorted(a);
+				aux[hash(a)].append(a);
 			}
 		}
 		delete[] table;
 		table = aux;
 	}
-
-	void printTable(){
-		for(int i = 0 ; i < size ; i++){
-			table[i].print(); 
-		}
-	}
-
 
 };
 
@@ -228,7 +207,11 @@ public:
 
 	int find(int key){
 		int i = hash(key);
-		return table[i].binarySearch(key);
+		if(table[i].getIndex() == 0){
+			return -1;
+		}else{
+			return table[i].binarySearch(key); 
+		}
 	}
 
 	void reHash(){
@@ -245,13 +228,6 @@ public:
 		table = aux;
 	}
 
-	void printTable(){
-		for(int i = 0 ; i < size ; i++){
-			table[i].print(); 
-		}
-	}
-
-
 };
 
 class HashTableC{
@@ -267,6 +243,9 @@ public:
 		this->ocupation = 0;
 		this->table = new int[size];
 		this->auxTable = new bool[size];
+		for(int i = 0; i < this->size ; i++){
+			auxTable[i] = false;
+		}
 	}
 
 	~HashTableC(){
@@ -316,6 +295,9 @@ public:
 		this->size = this->size * 2;
 		int *aux = new int[this->size];
 		bool *aux2 = new bool[this->size];
+		for(int i = 0; i < this->size ; i++){
+			aux2[i] = false;
+		}
 		for(int i = 0; i < this->size/2; i++){
 			if(auxTable[i]){
 				int key = table[i];
@@ -338,9 +320,16 @@ public:
 };
 
 int main(){
-	int k , m, n ,q,contloop = 0;
-	int penetras = 0; 
+	int k , m, n ,q,contloop = 0 ;
+	int penetras; 
+
 	while(cin >> k >> m >> n >> q){
+
+		contA = 0;
+		contB = 0;
+		contC = 0;
+		penetras = 0;
+		
 		HashTableA *hta = new HashTableA(m);
 		HashTableB *htb = new HashTableB(m);
 		HashTableC *htc = new HashTableC(m);
@@ -350,19 +339,21 @@ int main(){
 		for(int i = 0 ; i < n ; i++){
 			cin >> entry;
 
-			//hta->insert(entry);
+			hta->insert(entry);
 			htb->insert(entry);
-			//htc->insert(entry);
+			htc->insert(entry);
 		}
 
 
 		for(int i = 0; i < q ; i++){
 			cin >> entry;
 
-			//int a = hta->find(entry);
+
+			int a = hta->find(entry);
 			int b = htb->find(entry);
-			//int c = htc->find(entry);
-			if(b == -1){
+			int c = htc->find(entry);
+
+			if(a == -1){
 				penetras++;
 			}
 		}
@@ -371,9 +362,6 @@ int main(){
 
 		contloop++;
 
-		contA = 0;
-		contB = 0;
-		contC = 0;
 		delete hta;
 		delete htb;
 		delete htc;
