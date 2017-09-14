@@ -10,7 +10,6 @@ struct node
 	node* left;
 
 	node* right;
-};
 
 node* bst_insert(node* root, int v){
 	if(root == NULL){
@@ -64,12 +63,13 @@ node** bst_remove_min(node* root, int v){
 		return aux;
 
 	}
-
-
 }
+
+};
 
 node* bst_remove(node* root, int v){
 	if(root == NULL){
+		cout << "value not found" << endl;
 		return NULL;
 	}else if (v < root->val){
 		root->left = bst_remove(root->left,v);
@@ -86,12 +86,22 @@ node* bst_remove(node* root, int v){
 			delete root;
 			return l;
 		}else{
-			node** aux = bst_remove_min(root->right,v);
+			node** aux = root->bst_remove_min(root->right,v);
 			root->right = aux[0];
 			root->val = aux[1]->val;
 			delete[] aux;
 			return root;
 		}
+	}
+}
+
+int bst_height(node* root){
+	if(root == NULL){
+		return 0;
+	}else{
+		int l = bst_height(root->left);
+		int r = bst_height(root->right);
+		return 1 + max(l,r);
 	}
 }
 
@@ -122,21 +132,28 @@ public:
 		root = bst_remove(root,v);
 	}
 
+	int getHeight(){
+		return bst_height(root);
+	}
+
 };
 
 
 int main(){
 	BinarySearchTree *bst = new BinarySearchTree();
 
-
-	bst->insert(10);
-	bst->insert(20);
+	bst->insert(4);
 	bst->insert(30);
-	bst->insert(5);
-	bst->insert(9);
-	bst->insert(15);
+	bst->insert(7);
+	bst->insert(3);
+	bst->insert(1);
+	bst->insert(0);
+	bst->insert(50);
+	bst->insert(90);
+	bst->insert(100);
 
-	bst->remove(10);
+	cout << bst->getHeight() << endl;
+
 
 	bst->preorder_print();
 
