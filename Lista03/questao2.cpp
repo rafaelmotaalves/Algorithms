@@ -70,6 +70,8 @@ node* bst_remove(node* root, string v);
 void bst_ls_print(node* root);
 void bst_tree_inorder(node* ,int n);
 node* bst_remove_all(node* root);
+void bst_tree_preorder(node* root,int n);
+void bst_tree_postorder(node* root,int n);
 
 
 int main(){
@@ -110,7 +112,7 @@ int main(){
 	 		bst_ls_print(current.get()->root);
 	 	}else if(func == "pwd"){
 	 		cout << current.get()->val << endl;
-	 	}else if(func == "rm"){//possivelmente errado
+	 	}else if(func == "rm"){
 	 		cin >> v;
 	 		node* aux = bst_search(current.get()->root,v);
 	 		if(aux != NULL){
@@ -127,6 +129,12 @@ int main(){
 	 		cin >> v;
 	 		if(v ==  "--in-order"){
 	 			bst_tree_inorder(current.get()->root,0);
+	 		}else if(v == "--pre-order"){
+	 			bst_tree_preorder(current.get()->root,0);
+	 		}else if(v == "--post-order"){
+	 			bst_tree_postorder(current.get()->root,0);
+	 		}else{
+	 			cout << "Illegal option\n";
 	 		}
 	 	}else{
 	 		cout << "Command not found\n";
@@ -152,10 +160,10 @@ void bst_tree_inorder(node* root,int n){
 	if(root == NULL){
 		return;
 	}else if(root->type == "dir"){
+		bst_tree_inorder(root->left,n);
 		for(int i = 0; i<n; i++){
 			cout << "    ";
 		}
-		bst_tree_inorder(root->left,n);
 		n++;
 		cout << root->val << endl;
 		bst_tree_inorder(root->root,n);
@@ -180,23 +188,50 @@ void bst_tree_preorder(node* root,int n){
 		for(int i = 0; i<n; i++){
 			cout << "    ";
 		}
-		bst_tree_inorder(root->left,n);
-		cout << root->val << endl;
 		n++;
-		bst_tree_inorder(root->root,n);
+		cout << root->val << endl;
+		bst_tree_preorder(root->root,n);
 		n--;
-		bst_tree_inorder(root->right,n);
+		bst_tree_preorder(root->left,n);
+		bst_tree_preorder(root->right,n);
 
 	}else{
-		bst_tree_inorder(root->left,n);
 		for(int i = 0 ; i < n ; i++){
 			cout << "    ";
 		}
 		cout << root->val << endl;
-		bst_tree_inorder(root->right,n);
+		bst_tree_preorder(root->left,n);
+		bst_tree_preorder(root->right,n);
 	}
 
 }
+
+void bst_tree_postorder(node* root,int n){
+	if(root == NULL){
+		return;
+	}else if(root->type == "dir"){
+		bst_tree_postorder(root->left,n);
+		bst_tree_postorder(root->right,n);
+		for(int i = 0; i<n; i++){
+			cout << "    ";
+		}
+		n++;
+		cout << root->val << endl;
+		bst_tree_postorder(root->root,n);
+		n--;
+
+	}else{
+		bst_tree_postorder(root->left,n);
+		bst_tree_postorder(root->right,n);
+		for(int i = 0 ; i < n ; i++){
+			cout << "    ";
+		}
+		cout << root->val << endl;
+	}
+
+}
+
+
 
 
 
