@@ -64,85 +64,11 @@ void bst_postorder_print(node* root);
 
 
 int main(){
-	Stack *posicao = new Stack();
-
-	node* dirprincipal = new node();
-	dirprincipal->val = '/';
-	dirprincipal->type = "dirprincipal";
-	dirprincipal->root = NULL;
-	dirprincipal->right = NULL;
-	dirprincipal->left = NULL;
 
 
-	posicao->push(dirprincipal);
-	node* curr = NULL;
-	string func;
-
-	while(cin >> func){
-
-		if(func == "mkdir"){
-			string v;
-			cin >> v;
-			posicao->getTop()->root = bst_insert(posicao->getTop()->root,v,"dir");
-		}
-		else if(func == "touch"){
-			string v;
-			cin >>v;
-			curr = bst_insert(curr,v,"dir");
-		}
-		else if(func == "cd"){//quebrado
-			string v ;
-			cin >> v;
-			node* aux;
-			if(v != ".."){ 
-				aux = bst_search(curr,v);
-				if(aux == NULL){
-					cout << "No such file or directory\n";
-				}else if(aux->type != "dir"){
-					cout << "Not a directory\n";
-				}else{
-					curr = aux->root;
-				}
-			}else{
-
-		}
-		}
-		else if(func == "ls"){
-			bst_inorder_print(posicao->getTop()->root);
-		}
-		else if(func == "rm"){//quebrado;
-			string v;
-			cin >>v;
-			node* aux = bst_search(curr,v);
-			if(aux->type == "file"){
-				bst_remove(curr,v);
-			}else{
-				bst_remove_all(aux->root);
-				bst_remove(curr,v);
-			}
-		}
-		else if(func == "pwd"){
-		}
-		else if(func == "tree"){//incompleto
-			string arg;
-			cin >> arg;
-			cout << endl;
-			if(arg == "--pre-order")
-				bst_preorder_print(curr);
-			else if(arg == "--in-order")
-				bst_inorder_print(curr);
-			else if(arg == "--post-order")
-				bst_postorder_print(curr);
-			else
-				cout << "Illegral option\n";
-		}else{
-			cout << "Command not found\n";
-		}
-	}
 
 	return 0;
 }
-
 
 node* bst_remove_all(node* root){
 	if(root == NULL){

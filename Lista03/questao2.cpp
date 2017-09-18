@@ -65,12 +65,12 @@ public:
 
 node* bst_insert(node* root, string v,string t);
 node* bst_search(node* root , string v);
-void bst_preorder_print(node* root);
 node** bst_remove_min(node* root, string v);
 node* bst_remove(node* root, string v);
+void bst_ls_print(node* root);
+void bst_tree_inorder(node* ,int n);
 node* bst_remove_all(node* root);
-void bst_inorder_print(node* root);
-void bst_postorder_print(node* root);
+
 
 int main(){
 	Stack current;
@@ -107,9 +107,27 @@ int main(){
 	 		cin >> v;
 	 		current.get()->root = bst_insert(current.get()->root,v,"file");
 	 	}else if(func == "ls"){
-	 		bst_inorder_print(current.get()->root);
+	 		bst_ls_print(current.get()->root);
 	 	}else if(func == "pwd"){
 	 		cout << current.get()->val << endl;
+	 	}else if(func == "rm"){//possivelmente errado
+	 		cin >> v;
+	 		node* aux = bst_search(current.get()->root,v);
+	 		if(aux != NULL){
+	 			if(aux->type == "file"){
+	 				current.get()->root = bst_remove(current.get()->root,v);
+	 			}else{
+	 				aux->root = bst_remove_all(aux->root);
+	 				current.get()->root =bst_remove(current.get()->root,v);
+	 			}
+	 		}else{
+	 			cout << "No such file or directory\n";
+	 		}
+	 	}else if(func == "tree"){
+	 		cin >> v;
+	 		if(v ==  "--in-order"){
+	 			bst_tree_inorder(current.get()->root,0);
+	 		}
 	 	}else{
 	 		cout << "Command not found\n";
 	 	}
@@ -119,17 +137,67 @@ int main(){
 	return 0;
 }
 
-
-
 node* bst_remove_all(node* root){
 	if(root == NULL){
-		return root;
+		return NULL;
 	}
 	bst_remove_all(root->left);
 	bst_remove(root,root->val);
 	bst_remove_all(root->right);
 
 }
+
+
+void bst_tree_inorder(node* root,int n){
+	if(root == NULL){
+		return;
+	}else if(root->type == "dir"){
+		for(int i = 0; i<n; i++){
+			cout << "    ";
+		}
+		bst_tree_inorder(root->left,n);
+		n++;
+		cout << root->val << endl;
+		bst_tree_inorder(root->root,n);
+		n--;
+		bst_tree_inorder(root->right,n);
+
+	}else{
+		bst_tree_inorder(root->left,n);
+		for(int i = 0 ; i < n ; i++){
+			cout << "    ";
+		}
+		cout << root->val << endl;
+		bst_tree_inorder(root->right,n);
+	}
+
+}
+
+void bst_tree_preorder(node* root,int n){
+	if(root == NULL){
+		return;
+	}else if(root->type == "dir"){
+		for(int i = 0; i<n; i++){
+			cout << "    ";
+		}
+		bst_tree_inorder(root->left,n);
+		cout << root->val << endl;
+		n++;
+		bst_tree_inorder(root->root,n);
+		n--;
+		bst_tree_inorder(root->right,n);
+
+	}else{
+		bst_tree_inorder(root->left,n);
+		for(int i = 0 ; i < n ; i++){
+			cout << "    ";
+		}
+		cout << root->val << endl;
+		bst_tree_inorder(root->right,n);
+	}
+
+}
+
 
 
 node* bst_insert(node* root, string v,string t){
@@ -180,13 +248,13 @@ node** bst_remove_min(node* root, string v){
 
 node* bst_remove(node* root, string v){
 	if(root == NULL){
-		cout << "No such file or directory\n";
 		return NULL;
 	}else if ((v) < root->val){
 		root->left = bst_remove(root->left,v);
 		return root;
 	}else if (v > root->val){
 		root->right = bst_remove(root->right,v);
+		return root;
 	}else{
 		if(root->left == NULL){
 			node* r = root->right;
@@ -206,32 +274,13 @@ node* bst_remove(node* root, string v){
 	}
 }
 
-void bst_inorder_print(node* root){
+
+void bst_ls_print(node* root){
 	if(root == NULL){
 		return;
 	}
-	bst_inorder_print(root->left);
+	bst_ls_print(root->left);
 	cout << root->val << endl;
-	bst_inorder_print(root->right);
-
-}
-
-void bst_preorder_print(node* root){
-	if(root == NULL){
-		return;
-	}
-	cout << root->val << endl;
-	bst_inorder_print(root->left);
-	bst_inorder_print(root->right);
-
-}
-
-void bst_postorder_print(node* root){
-	if(root == NULL){
-		return;
-	}
-	bst_inorder_print(root->left);
-	bst_inorder_print(root->right);
-	cout << root->val << endl;
+	bst_ls_print(root->right);
 
 }
