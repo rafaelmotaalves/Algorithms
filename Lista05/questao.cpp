@@ -115,109 +115,75 @@ void Min_heap::print(){
 	}
 }
 
-struct aresta
+struct node
 {
 	int v;
 	int peso;
+	node *next;
 };
- 
-class DynamicArray{
-private:
-	int index;
-	int size;
-	aresta *array;
-public:
-	DynamicArray(){
-		index = 0;
-		size = 1;
-		array = new aresta[size];
+
+node* insert(node* curr,int v,int p){
+	node* n = new node;
+	n->v = v;
+	n->peso = p;
+	n->next = curr->next;
+	curr->next = n;
+	return curr;
+}
+
+node* append(node* head,int v,int p){
+	node* curr = head;
+	while(curr->next != NULL){
+		curr = curr->next;
 	}
+	return insert(curr,v,p);
+}
 
-	void doubleSize(){
-		size = size*2;
-		aresta *aux = new aresta[size];
-		for(int i=0 ; i < size ; i++){
-			aux[i] = array[i];
-		}
-		delete[] array;
-		array = aux;
+
+void printl(node* head){
+	node* curr = head->next;
+	while(curr != NULL){
+		std::cout<<curr->v<<" "<<curr->peso << " | ";
+		curr = curr->next;
 	}
+}
 
-	void insert(aresta v,int pos){
-		if(index < pos){
-			std::cout<<"invalid index\n";
-		}else{
-			if(index == size){
-				doubleSize();
-			}
-			aresta *a = new aresta[index];
-			for(int i = 0; i < index ; i++){
-				a[i] = array[i];
-			}
-			for(int i = pos ; i < index ; i++){
-				array[i+1] = a[i];
-			}
-			delete[] a;
-			array[pos] = v;
-			index++;
-		}
-	}
-
-
-	void insertSorted(aresta v){
-		if(index == size){
-			doubleSize();
-		}
-		for(int i = 0; i < index ; i++){
-			if(array[i].peso > v.peso){
-				insert(v,i);
-				return;			
-			}
-		}
-		array[index] = v;
-		index++;
-
-	}
-
-	void print(){
-		for(int i = 0 ; i < index ; i++){
-			std::cout << array[i].v << " " << array[i].peso << " | ";
-		}
-		std::cout << std::endl;
-	}
-
-
-};
 
 class Grafo{
 private:
-	DynamicArray *e;
+	node **e;
 	int size;
 public:
 	Grafo(int size){
 		this->size = size;
-		e = new DynamicArray[size];
+		e = new node*[size];
+		for(int i = 0 ; i< size; i++){
+			e[i] = new node;
+		}
 	}
 
-	void inserirVertice(int a,int b,int peso){
-		aresta ar;
-		ar.v = b;
-		ar.peso = peso;
-		e[a].insertSorted(ar);
+	void inserirAresta(int a,int b,int peso){
+		append(e[a],b,peso);
+		
+
+	}
+
+	node* get(int i){
+		return e[i];
 
 	}
 
 	void print(){
 		for(int i=0 ; i < size ; i++){
-			std::cout << i << ": " ;
-			e[i].print();
+			std::cout << i << ": ";
+			printl(e[i]);
+			cout<<endl;
 		}
 	}
 };
 
 
 int main(){
-
 	int m;//numero de cidades
 	cin >> m;
 	int tarifas[m];
@@ -233,18 +199,16 @@ int main(){
 	}
 	int w;
 	cin >> w;
-	for(int i = 0; i < n; i++){
-		int x, y, z;
-		cin >> x;
-		cin >> y;
-		cin >> z;
-		gr->inserirVertice(x,y,z);
-		gr->inserirVertice(y,x,z);
+	for(int i = 0 ; i < w ; i++){
+		int a,b,p;
+		cin >> a;
+		cin >> b;
+		cin >> p;
+		gr->inserirAresta(a,b,p);
+		gr->inserirAresta(b,a,p);
 	}
-
 	string func;
-
-	while(cin >> func){
+	while(cin>>func){
 		if(func == "UPDA"){
 			int j , r;
 			cin >> j;
@@ -260,11 +224,14 @@ int main(){
 				//curta
 			}else if(o == 'E'){
 				//economica
+			}else{
+				break;
 			}
 		}
 
 	}
 
-
+	gr->print();
+	
 	return 0;
-}
+ }
