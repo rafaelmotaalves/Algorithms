@@ -164,7 +164,7 @@ public:
 
 	void inserirAresta(int a,int b,int peso){
 		append(e[a],b,peso);
-		
+		append(e[b],a,peso);
 
 	}
 
@@ -195,7 +195,7 @@ int main(){
 	Grafo *gr = new Grafo(n);
 	int cidades[n];
 	for(int i = 0; i < n ; i++){
-		cin >> cidades[i];
+		cin >> cidades[i];//cidade em que cada ponto de encontra
 	}
 	int w;
 	cin >> w;
@@ -205,7 +205,6 @@ int main(){
 		cin >> b;
 		cin >> p;
 		gr->inserirAresta(a,b,p);
-		gr->inserirAresta(b,a,p);
 	}
 	string func;
 	while(cin>>func){
@@ -224,8 +223,6 @@ int main(){
 				//curta
 			}else if(o == 'E'){
 				//economica
-			}else{
-				break;
 			}
 		}
 
