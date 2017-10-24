@@ -1,40 +1,6 @@
 #include <bits/stdc++.h>
-#include <limits>
 
 using namespace std;
-
-struct node
-{
-	int v;
-	int peso;
-	node *next;
-};
-
-node* insert(node* curr,int v,int p){
-	node* n = new node;
-	n->v = v;
-	n->peso = p;
-	n->next = curr->next;
-	curr->next = n;
-	return curr;
-}
-
-node* append(node* head,int v,int p){
-	node* curr = head;
-	while(curr->next != NULL){
-		curr = curr->next;
-	}
-	return insert(curr,v,p);
-}
-
-
-void printl(node* head){
-	node* curr = head->next;
-	while(curr != NULL){
-		std::cout<<curr->v<<" "<<curr->peso << " | ";
-		curr = curr->next;
-	}
-}
 
 struct heap_node
 {
@@ -174,113 +140,18 @@ void heap_update(int v , int p ){
 };
 
 
-class Grafo{
-private:
-	node **e;
-	int size;
-public:
-	Grafo(int size){
-		this->size = size;
-		e = new node*[size];
-		for(int i = 0 ; i< size; i++){
-			e[i] = new node;
-		}
-	}
-
-	void inserirAresta(int a,int b,int peso){
-		append(e[a],b,peso);
-		append(e[b],a,peso);
-
-	}
-
-	void print(){
-		for(int i=0 ; i < size ; i++){
-			std::cout << i << ": ";
-			printl(e[i]);
-			cout<<endl;
-		}
-	}
-
-	int* dijkstra(int s){
-		int *d = new int[size];
-		for(int i = 0 ; i < size ; i++){
-			d[i] = std::numeric_limits<int>::max();
-		}
-		d[s] = 0;
-		Min_heap *h = new Min_heap(size);
-		h->insert(s,0);
-		for(int i = 0 ; i < size ; i++){
-			heap_node a = h->extract();
-			int u = a.v;
-			node *curr = e[u];
-			while( curr!= NULL){
-				if(d[u] + curr->peso < d[curr->v]){
-					d[curr->v] = d[u] + curr->peso;
-					h->heap_update(curr->v,d[curr->v]);
-				}
-				curr = curr->next;
-			}
-		}
-		delete h;
-		return d;
-
-	}
-
-};
-
 
 int main(){
-	int m;//numero de cidades
-	cin >> m;
-	int tarifas[m];
-	for(int i = 0 ; i < m ; i++){
-		cin >>tarifas[i];//tarifa por cidade; 
-	}
-	int n;//quantidade de pontos(tamanho do grafo)
-	cin >> n;
-	Grafo *gr = new Grafo(n);
-	int cidades[n];
-	for(int i = 0; i < n ; i++){
-		cin >> cidades[i];//cidade em que cada ponto de encontra
-	}
-	int w;
-	cin >> w;
-	for(int i = 0 ; i < w ; i++){
-		int a,b,p;
-		cin >> a;
-		cin >> b;
-		cin >> p;
-		gr->inserirAresta(a,b,p);
-	}
-	string func;
-	while(false){
-		if(func == "UPDA"){
-			int j , r;
-			cin >> j;
-			cin >> r;
-			tarifas[j] = r;
-		}else if(func == "RIDE"){
-			int c , d;
-			char o;
-			cin >> c;
-			cin >> d;
-			cin >> o;
-			if(o == 'S'){
-				//curta
-			}else if(o == 'E'){
-				//economica
-			}
-		}
+	Min_heap * mh = new Min_heap(5);
 
-	}
+	mh->insert(0,10);
+	mh->insert(1, 5);
+	mh->insert(2, 4);
+	mh->insert(3,6);
 
-	gr->print();
+	mh->heap_update(3,1);
 
-	int* a = gr->dijkstra(2);
+	mh->print();
 
-	cout << a[3];
-
-	delete a;
-	
 	return 0;
- }
+}
