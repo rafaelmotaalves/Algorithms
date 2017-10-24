@@ -48,13 +48,10 @@ Min_heap(int size){
 	heap_size = 0;
 	array_size = size;
 	prioritys = new heap_node[size];
-	values = new int[size];
-	for(int i = 0 ; i < size ; i++){
+	values = new int[1000];
+	for(int i = 0 ; i < 1000; i++){
 		values[i] = -1;
-		prioritys[i].p = -1;
-		prioritys[i].v = -1;
 	}
-
 }
 
 
@@ -76,7 +73,7 @@ void insert(int v, int p){
 
 }
 
-void bubbleup(){//errado
+void bubbleup(){
 	int i = heap_size - 1;
 	while(i>0 && prioritys[i].p <= prioritys[(int)floor((i-1)/2)].p){
 			values[prioritys[i].v] = (int)floor((i-1)/2);
@@ -97,17 +94,13 @@ void doubleSize(){
 		if(i < heap_size){
 			auxp[i].p = prioritys[i].p;
 			auxp[i].v = prioritys[i].v;
-			auxv[i] = values[i];
 		}else{
 			auxp[i].p = -1;
 			auxp[i].v = -1;
-			auxv[i] = -1; 
 		}
 	}
 	delete[] prioritys;
-	delete[] values;
 	prioritys = auxp;
-	values = auxv;
 }
 
 void heapify(int i){
@@ -121,11 +114,11 @@ void heapify(int i){
 		m = r;
 	}
 	if(m != i){
+		values[prioritys[m].v] = i;
+		values[prioritys[i].v] = m;
 		heap_node aux = prioritys[i];
 		prioritys[i] = prioritys[m];
 		prioritys[m] = aux;
-		values[prioritys[i].v] = m;
-		values[prioritys[m].v] = i;
 		heapify(m);
 	}
 }
@@ -135,8 +128,9 @@ heap_node extract(){
 	heap_node r;
 	if(heap_size != 0){
 		r = prioritys[0];
+		values[prioritys[0].v] = -1;
+		values[prioritys[heap_size-1].v] = 0;
 		prioritys[0] = prioritys[heap_size-1];
-		values[heap_size-1] = -1;
 		heap_size--;
 		heapify(0);
 	}
@@ -148,7 +142,7 @@ void print(){
 		cout << prioritys[i].p <<  " ";
 	}
 	cout << endl;
-	for(int i=0 ; i < array_size; i++ ){
+	for(int i=0 ; i < 100; i++ ){
 		cout << values[i] << " ";
 	} 
 }
@@ -163,6 +157,7 @@ void heap_update(int v , int p ){
 }
 
 };
+
 
 
 class Grafo{
@@ -196,10 +191,11 @@ public:
 		int *d = new int[size];
 		int *p = new int[size];
 		for(int i = 0 ; i < size ; i++){
-			d[i] = 10000;
+			d[i] = -1;
+			p[i] = -1;
 		}
 		d[s] = 0;
-		p[s] = 0;
+		p[s] =0;
 		Min_heap *h = new Min_heap(size);
 		h->insert(s,0);
 		for(int i = 0 ; i < size ; i++){
@@ -207,9 +203,9 @@ public:
 			int u = a.v;
 			node *curr = e[u];
 			while( curr!= NULL){
-				if(d[u] + curr->peso < d[curr->v]){
+				if( d[curr->v] == -1 || d[u] + curr->peso < d[curr->v]){
 					d[curr->v] = (d[u] + curr->peso);
-					p[curr->v] = (d[u] + curr->peso)* tarifas[cidades[u]];
+					p[curr->v] = p[u] + curr->peso * tarifas[cidades[u]];
 					h->heap_update(curr->v,d[curr->v]);
 				}
 				curr = curr->next;
@@ -227,7 +223,8 @@ public:
 		int *d = new int[size];
 		int *p = new int[size];
 		for(int i = 0 ; i < size ; i++){
-			p[i] = 10000;
+			p[i] = -1;
+			d[i] = -1;
 		}
 		d[s] = 0;
 		p[s] = 0;
@@ -238,9 +235,9 @@ public:
 			int u = a.v;
 			node *curr = e[u];
 			while( curr!= NULL){
-				if((p[u] + curr->peso)* tarifas[cidades[u]] < p[curr->v] * tarifas[cidades[u]]){
+				if(p[curr->v] == -1 || (p[u] + curr->peso* tarifas[cidades[u]] < p[curr->v] )){
 					d[curr->v] = (d[u] + curr->peso);
-					p[curr->v] = (d[u] + curr->peso)* tarifas[cidades[u]];
+					p[curr->v] = p[u] + curr->peso* tarifas[cidades[u]];
 					h->heap_update(curr->v,p[curr->v]);
 				}
 				curr = curr->next;
@@ -301,9 +298,12 @@ int main(){
 				gr->dijkstraS(c,cidades,tarifas,d);
 			}else if(o == 'E'){
 				gr->dijkstraE(c,cidades,tarifas,d);
+			}else{
+				break;
 			}
 		}
 
 	}
+
 	return 0;
  }

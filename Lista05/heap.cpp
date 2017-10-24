@@ -2,6 +2,30 @@
 
 using namespace std;
 
+struct node
+{
+	int v;
+	int peso;
+	node *next;
+};
+
+node* insert(node* curr,int v,int p){
+	node* n = new node;
+	n->v = v;
+	n->peso = p;
+	n->next = curr->next;
+	curr->next = n;
+	return curr;
+}
+
+void printl(node* head){
+	node* curr = head->next;
+	while(curr != NULL){
+		std::cout<<curr->v<<" "<<curr->peso << " | ";
+		curr = curr->next;
+	}
+}
+
 struct heap_node
 {
 	int p;
@@ -23,13 +47,10 @@ Min_heap(int size){
 	heap_size = 0;
 	array_size = size;
 	prioritys = new heap_node[size];
-	values = new int[size];
-	for(int i = 0 ; i < size ; i++){
+	values = new int[100];
+	for(int i = 0 ; i < 100; i++){
 		values[i] = -1;
-		prioritys[i].p = -1;
-		prioritys[i].v = -1;
 	}
-
 }
 
 
@@ -51,7 +72,7 @@ void insert(int v, int p){
 
 }
 
-void bubbleup(){//errado
+void bubbleup(){
 	int i = heap_size - 1;
 	while(i>0 && prioritys[i].p <= prioritys[(int)floor((i-1)/2)].p){
 			values[prioritys[i].v] = (int)floor((i-1)/2);
@@ -72,17 +93,13 @@ void doubleSize(){
 		if(i < heap_size){
 			auxp[i].p = prioritys[i].p;
 			auxp[i].v = prioritys[i].v;
-			auxv[i] = values[i];
 		}else{
 			auxp[i].p = -1;
 			auxp[i].v = -1;
-			auxv[i] = -1; 
 		}
 	}
 	delete[] prioritys;
-	delete[] values;
 	prioritys = auxp;
-	values = auxv;
 }
 
 void heapify(int i){
@@ -96,11 +113,11 @@ void heapify(int i){
 		m = r;
 	}
 	if(m != i){
+		values[prioritys[m].v] = i;
+		values[prioritys[i].v] = m;
 		heap_node aux = prioritys[i];
 		prioritys[i] = prioritys[m];
 		prioritys[m] = aux;
-		values[prioritys[i].v] = m;
-		values[prioritys[m].v] = i;
 		heapify(m);
 	}
 }
@@ -110,8 +127,9 @@ heap_node extract(){
 	heap_node r;
 	if(heap_size != 0){
 		r = prioritys[0];
+		values[prioritys[0].v] = -1;
+		values[prioritys[heap_size-1].v] = 0;
 		prioritys[0] = prioritys[heap_size-1];
-		values[heap_size-1] = -1;
 		heap_size--;
 		heapify(0);
 	}
@@ -123,7 +141,7 @@ void print(){
 		cout << prioritys[i].p <<  " ";
 	}
 	cout << endl;
-	for(int i=0 ; i < array_size; i++ ){
+	for(int i=0 ; i < 100; i++ ){
 		cout << values[i] << " ";
 	} 
 }
@@ -139,19 +157,21 @@ void heap_update(int v , int p ){
 
 };
 
-
-
 int main(){
 	Min_heap * mh = new Min_heap(5);
 
 	mh->insert(0,10);
-	mh->insert(1, 5);
-	mh->insert(2, 4);
-	mh->insert(3,6);
 
-	mh->heap_update(3,1);
+	mh->heap_update(1,20);
+	mh->heap_update(2,5);
+	mh->heap_update(10,11);
+
+	cout << mh->extract().p << endl;
+	cout << mh->extract().p << endl;
 
 	mh->print();
+
+
 
 	return 0;
 }
