@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <limits>
 
 using namespace std;
 
@@ -17,14 +16,6 @@ node* insert(node* curr,int v,int p){
 	n->next = curr->next;
 	curr->next = n;
 	return curr;
-}
-
-void printl(node* head){
-	node* curr = head->next;
-	while(curr != NULL){
-		std::cout<<curr->v<<" "<<curr->peso << " | ";
-		curr = curr->next;
-	}
 }
 
 struct heap_node
@@ -48,8 +39,8 @@ Min_heap(int size){
 	heap_size = 0;
 	array_size = size;
 	prioritys = new heap_node[size];
-	values = new int[1000];
-	for(int i = 0 ; i < 1000; i++){
+	values = new int[size];
+	for(int i = 0 ; i < size; i++){
 		values[i] = -1;
 	}
 }
@@ -61,10 +52,6 @@ Min_heap(int size){
 }
 
 void insert(int v, int p){
-	if(heap_size == array_size){
-		doubleSize();
-	}
-
 	values[v] = heap_size;
 	prioritys[heap_size].p = p;
 	prioritys[heap_size].v = v;
@@ -84,23 +71,6 @@ void bubbleup(){
 			i = floor((i-1)/2);
 	}
 
-}
-
-void doubleSize(){
-	array_size*=2;
-	heap_node *auxp = new heap_node[array_size];
-	int *auxv = new int[array_size];
-	for(int i = 0 ; i < array_size ; i++){
-		if(i < heap_size){
-			auxp[i].p = prioritys[i].p;
-			auxp[i].v = prioritys[i].v;
-		}else{
-			auxp[i].p = -1;
-			auxp[i].v = -1;
-		}
-	}
-	delete[] prioritys;
-	prioritys = auxp;
 }
 
 void heapify(int i){
@@ -123,7 +93,6 @@ void heapify(int i){
 	}
 }
 
-
 heap_node extract(){
 	heap_node r;
 	if(heap_size != 0){
@@ -135,16 +104,6 @@ heap_node extract(){
 		heapify(0);
 	}
 	return r;
-}
-
-void print(){
-	for(int i=0 ; i < heap_size ; i++){
-		cout << prioritys[i].p <<  " ";
-	}
-	cout << endl;
-	for(int i=0 ; i < 100; i++ ){
-		cout << values[i] << " ";
-	} 
 }
 
 void heap_update(int v , int p ){
@@ -179,20 +138,12 @@ public:
 
 	}
 
-	void print(){
-		for(int i=0 ; i < size ; i++){
-			std::cout << i << ": ";
-			printl(e[i]);
-			cout<<endl;
-		}
-	}
-
 	void dijkstraS(int s,int cidades[], int tarifas[],int destino){
 		int *d = new int[size];
 		int *p = new int[size];
 		for(int i = 0 ; i < size ; i++){
-			d[i] = -1;
-			p[i] = -1;
+			d[i] = 0x3f3f3f3f;
+			p[i] = 0;
 		}
 		d[s] = 0;
 		p[s] =0;
@@ -201,11 +152,11 @@ public:
 		for(int i = 0 ; i < size ; i++){
 			heap_node a = h->extract();
 			int u = a.v;
-			node *curr = e[u];
-			while( curr!= NULL){
-				if( d[curr->v] == -1 || d[u] + curr->peso < d[curr->v]){
+			node *curr = e[u]->next;
+			while( curr != NULL){
+				if( d[u] + curr->peso <= d[curr->v]){
 					d[curr->v] = (d[u] + curr->peso);
-					p[curr->v] = p[u] + curr->peso * tarifas[cidades[u]];
+					p[curr->v] = p[u] + (curr->peso * tarifas[cidades[u]]);
 					h->heap_update(curr->v,d[curr->v]);
 				}
 				curr = curr->next;
@@ -219,40 +170,37 @@ public:
 
 	}
 
-	void dijkstraE(int s,int cidades[] , int tarifas[],int destino){
+	void dijkstraE(int s,int cidades[], int tarifas[],int destino){
 		int *d = new int[size];
 		int *p = new int[size];
-		for(int i = 0 ; i < size ; i++){
-			p[i] = -1;
-			d[i] = -1;
+		for(int i= 0 ; i < size ; i++ ){
+			p[i] = 0x3f3f3f3f;
 		}
 		d[s] = 0;
 		p[s] = 0;
 		Min_heap *h = new Min_heap(size);
 		h->insert(s,0);
-		for(int i = 0 ; i < size ; i++){
+		for(int i =0 ; i < size ; i++){
 			heap_node a = h->extract();
 			int u = a.v;
-			node *curr = e[u];
-			while( curr!= NULL){
-				if(p[curr->v] == -1 || (p[u] + curr->peso* tarifas[cidades[u]] < p[curr->v] )){
-					d[curr->v] = (d[u] + curr->peso);
-					p[curr->v] = p[u] + curr->peso* tarifas[cidades[u]];
+			node* curr = e[u]->next;
+			while(curr != NULL){
+				if(p[u] + curr->peso*tarifas[cidades[u]] <=  p[curr->v]){
+					d[curr->v] = d[u] + curr->peso;
+					p[curr->v] =  p[u] + curr->peso*tarifas[cidades[u]];
 					h->heap_update(curr->v,p[curr->v]);
 				}
 				curr = curr->next;
 			}
 		}
 
-
 		delete h;
+
 		cout << d[destino] << " " << p[destino] << endl;
+
 		delete[] d;
 		delete[] p;
-
-
 	}
-
 
 
 };
@@ -298,8 +246,6 @@ int main(){
 				gr->dijkstraS(c,cidades,tarifas,d);
 			}else if(o == 'E'){
 				gr->dijkstraE(c,cidades,tarifas,d);
-			}else{
-				break;
 			}
 		}
 
