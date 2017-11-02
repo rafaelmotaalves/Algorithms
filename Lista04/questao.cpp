@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-
+#define endl '\n';
 
 using namespace std;
 
@@ -138,13 +138,6 @@ task Max_heap::extract(){
 
 }
 
-void Max_heap::print(){
-	for(int i = 0 ; i < heap_size; i++)
-		std::cout << array[i].id << " " << array[i].priority << std::endl;
-	std::cout << "\n";
-}
-
-
 int main(){
 	Max_heap *heap = new Max_heap();
 	int n;
@@ -193,7 +186,6 @@ int main(){
 				if(cpu[id].process.priority != 9){
 					cpu[id].process.priority = cpu[id].process.priority + 1;
 				}
-				controd[cpu[id].process.priorityO]++;
 				heap->insert(cpu[id].process);
 
 			}
@@ -201,27 +193,31 @@ int main(){
 
 		}
 
-	
-	for(int i = 0 ; i < 9; i++){
-		if(cpu[i].status == 'O' && heap->getHeap_size() > 0){
+
+	for(int i = 0 ; i < n && heap->getHeap_size() > 0; i++){
+		if(cpu[i].status == 'O'){
 			task a = heap->extract();
 			conttemp[a.priorityO] += (20 - a.priority);
+			controd[a.priorityO] ++;
 			cpu[i].assignTask(a);
+			break;
 		}
 	}
 	
 	}
 
-	cout << "STATS BY PRIORITY" << endl <<endl;
+	cout << "STATS BY PRIORITY" << endl;
+	cout << endl;
 
 	for(int i = 0; i < 10; i++){
-		cout << i << ": " << contproc[i] << " "  << conttemp[n] << " " << controd[n] << endl; 
+		cout << i << ": " << contproc[i] << " "  << conttemp[i] << " " << controd[i] << endl; 
 	}
 
 	cout << endl;
 
 
-	cout << "STATS BY CPU" << endl << endl;
+	cout << "STATS BY CPU" << endl;
+	cout << endl;
 	for(int i = 0; i < n ; i++){
 		cout << i << ": " << cpu[i].use << endl;
 	}
