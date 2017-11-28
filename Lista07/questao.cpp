@@ -39,18 +39,21 @@ void insertHeight(int x, int y, int h){
 }
 
 void insertWall(int x1,int y1, int x2, int y2){
-	if(x1 == x2){
-		lab[x1][y1].l = 0;
-		lab[x2][y2].o = 0;
-	}else if(y1 == y2){
-		lab[x1][y1].n = 0;
-		lab[x2][y2].s = 0;
+
+	if(y1-size+1 == y2-size+1){
+		lab[abs(y1-size+1)][x1].l = 0;
+		lab[abs(y2-size+1)][x2].o = 0;
+	}else if(x1 == x2){
+		lab[abs(y1-size+1)][x1].n = 0;
+		lab[abs(y2-size+1)][x2].s = 0;
 	}
+}
+int get(int x,int y){
+	return (lab[abs(y-size+1)][x].h);
 }
 
 void greedy(int x, int y){
 	int max = 0;
-	cout << lab[x][y].h;
 	while(true){
 		int i,j;
 		i = x;
@@ -68,14 +71,10 @@ void greedy(int x, int y){
 	cout <<"="<<max;
 }
 
-int get(int x,int y){
-	return (lab[abs(y-size+1)][x].h);
-}
 
 
 void print(){
-	for(int i = size-1; i >= 0 ; i--){
-		cout << i << "=";
+	for(int i = 0; i <size ; i++){
 		for(int j =0 ; j < size ; j++){
 			cout << lab[i][j].h;
 			if(!lab[i][j].l){
@@ -114,7 +113,18 @@ int main(){
 		}
 	}
 
-	cout << m->get(5,9);
-	cout << m->get(7,5);
+	int w;
+	scanf("%d",&w);
+
+
+	int x1,y1,x2,y2;
+
+	for(int i = 0 ; i < w; i++){
+		scanf("%d %d %d %d",&x1,&y1,&x2,&y2);
+		m->insertWall(x1,y1,x2,y2);
+	}
+
+	
+	m->print();
 	return 0;
 }
