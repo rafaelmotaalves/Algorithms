@@ -68,6 +68,11 @@ void greedy(int x, int y){
 	cout <<"="<<max;
 }
 
+int get(int x,int y){
+	return (lab[abs(y-size+1)][x].h);
+}
+
+
 void print(){
 	for(int i = size-1; i >= 0 ; i--){
 		cout << i << "=";
@@ -102,30 +107,14 @@ int main(){
 
 	Mapa *m = new Mapa(size);
 	int h;
-	for(int i = 0; i < size; i++){
+	for(int i = size-1; i >= 0 ; i--){
 		for(int j = 0 ; j < size ; j++){
 			scanf("%d",&h);
-			m->insertHeight(j,i,h);
+			m->insertHeight(i,j,h);
 		}
 	}
 
-	int w;
-	scanf("%d",&w);
-
-	for(int i = 0 ; i< w ; i++){
-		int x1,y1,x2,y2;
-		scanf("%d %d %d %d", &x1,&y1,&x2,&y2);
-		m->insertWall(x1,y1,x2,y2);
-	}
-	cout << endl;
-
-	m->print();
-
-	int x,y;
-	while(true){
-		scanf("%d %d",&x,&y);
-		m->greedy(x,y);
-	}
-
+	cout << m->get(5,9);
+	cout << m->get(7,5);
 	return 0;
 }
