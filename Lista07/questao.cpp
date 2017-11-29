@@ -49,7 +49,27 @@ void insertWall(int x1,int y1, int x2, int y2){
 	}
 }
 int get(int x,int y){
-	return (lab[abs(y-size+1)][x].h);
+	if(abs(y-size+1) >= 0 && abs(y-size+1) < size && x >= 0 && x < size){
+		return (lab[abs(y-size+1)][x].h);		
+	}else{
+		return -1;
+	}
+}
+
+bool getWall(int x, int y, char p){
+	if(abs(y-size+1) >= 0 && abs(y-size+1) < size && x >= 0 && x < size){
+		if(p == 'n'){
+			return (lab[abs(y-size+1)][x].n);		
+		}else if(p == 'l'){
+			return (lab[abs(y-size+1)][x].l);
+		}else if(p == 's'){
+			return (lab[abs(y-size+1)][x].s);
+		}else{
+			return (lab[abs(y-size+1)][x].o);
+		}
+	}else{
+		return 0;
+	}
 }
 
 void greedy(int x, int y){
@@ -59,11 +79,40 @@ void greedy(int x, int y){
 		i = x;
 		j = y;
 		char d;
-		max = lab[x][y].h;
-		
-		if(lab[x][y].h == max){
+		max = get(x,y);
+		if(get(x,y+1) > max && getWall(x,y,'n')){
+			i = x;
+			j = y+1;
+			d = 'N';
+			max = get(x,y+1);
+			//N
+		}
+		if(get(x+1,y) > max && getWall(x,y,'l')){
+			i = x+1;
+			j = y;
+			d = 'L';
+			max = get(x+1,y);
+			//L
+		}
+		if(get(x,y-1) > max && getWall(x,y,'s')){
+			i = x;
+			j = y-1;
+			d = 'S';
+			max = get(x,y-1);
+			//S
+		}
+		if(get(x-1,y) > max && getWall(x,y,'o')){
+			i = x-1;
+			j = y;
+			d = 'O';
+			max = get(x-1,y);
+			//O
+		}
+
+		if(get(x,y) == max){
 			break;
 		}
+
 		cout << d;
 		x = i;
 		y = j;
@@ -124,7 +173,8 @@ int main(){
 		m->insertWall(x1,y1,x2,y2);
 	}
 
-	
 	m->print();
+
+	m->greedy(1,1);
 	return 0;
 }
