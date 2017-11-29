@@ -56,13 +56,13 @@ int get(int x,int y){
 	}
 }
 
-bool getWall(int x, int y, char p){
+bool getWall(int x, int y, int p){
 	if(abs(y-size+1) >= 0 && abs(y-size+1) < size && x >= 0 && x < size){
-		if(p == 'n'){
+		if(p == 0){
 			return (lab[abs(y-size+1)][x].n);		
-		}else if(p == 'l'){
+		}else if(p == 1){
 			return (lab[abs(y-size+1)][x].l);
-		}else if(p == 's'){
+		}else if(p == 2){
 			return (lab[abs(y-size+1)][x].s);
 		}else{
 			return (lab[abs(y-size+1)][x].o);
@@ -80,28 +80,28 @@ void greedy(int x, int y){
 		j = y;
 		char d;
 		max = get(x,y);
-		if(get(x,y+1) > max && getWall(x,y,'n')){
+		if(get(x,y+1) > max && getWall(x,y,0)){
 			i = x;
 			j = y+1;
 			d = 'N';
 			max = get(x,y+1);
 			//N
 		}
-		if(get(x+1,y) > max && getWall(x,y,'l')){
+		if(get(x+1,y) > max && getWall(x,y,1)){
 			i = x+1;
 			j = y;
 			d = 'L';
 			max = get(x+1,y);
 			//L
 		}
-		if(get(x,y-1) > max && getWall(x,y,'s')){
+		if(get(x,y-1) > max && getWall(x,y,2)){
 			i = x;
 			j = y-1;
 			d = 'S';
 			max = get(x,y-1);
 			//S
 		}
-		if(get(x-1,y) > max && getWall(x,y,'o')){
+		if(get(x-1,y) > max && getWall(x,y,3)){
 			i = x-1;
 			j = y;
 			d = 'O';
@@ -117,7 +117,7 @@ void greedy(int x, int y){
 		x = i;
 		y = j;
 	}
-	cout <<"="<<max;
+	cout <<"="<<max << endl;
 }
 
 
@@ -174,7 +174,11 @@ int main(){
 	}
 
 	m->print();
+	int x,y;
 
-	m->greedy(1,1);
+	while(true){
+		scanf("%d %d",&x,&y);
+		m->greedy(x,y);
+	}
 	return 0;
 }
