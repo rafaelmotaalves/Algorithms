@@ -18,6 +18,14 @@ struct cell
 };
 
 
+struct direction
+{
+	int h;
+	int x;
+	int y;
+	int d;
+};
+
 class Mapa{
 
 private:
@@ -72,6 +80,49 @@ bool getWall(int x, int y, int p){
 	}
 }
 
+
+direction checkSides(int x,int y,int max){
+	int i,j,d;
+	i = x;
+	j = y;
+	if(get(x,y+1) > max && getWall(x,y,0)){
+		i = x;
+		j = y+1;
+		d = 0;
+		max = get(x,y+1);
+		//N
+	}
+	if(get(x+1,y) > max && getWall(x,y,1)){
+		i = x+1;
+		j = y;
+		d = 1;
+		max = get(x+1,y);
+		//L
+	}
+	if(get(x,y-1) > max && getWall(x,y,2)){
+		i = x;
+		j = y-1;
+		d = 2;
+		max = get(x,y-1);
+		//S
+	}
+	if(get(x-1,y) > max && getWall(x,y,3)){
+		i = x-1;
+		j = y;
+		d = 3;
+		max = get(x-1,y);
+		//O
+	}
+
+	direction r;
+	r.h = max;
+	r.x = i;
+	r.y = j;
+	r.d = d;
+
+	return r;
+}
+
 void greedy(int x, int y){
 	int max = 0;
 	while(true){
@@ -80,42 +131,27 @@ void greedy(int x, int y){
 		j = y;
 		char d;
 		max = get(x,y);
-		if(get(x,y+1) > max && getWall(x,y,0)){
-			i = x;
-			j = y+1;
-			d = 'N';
-			max = get(x,y+1);
-			//N
-		}
-		if(get(x+1,y) > max && getWall(x,y,1)){
-			i = x+1;
-			j = y;
-			d = 'L';
-			max = get(x+1,y);
-			//L
-		}
-		if(get(x,y-1) > max && getWall(x,y,2)){
-			i = x;
-			j = y-1;
-			d = 'S';
-			max = get(x,y-1);
-			//S
-		}
-		if(get(x-1,y) > max && getWall(x,y,3)){
-			i = x-1;
-			j = y;
-			d = 'O';
-			max = get(x-1,y);
-			//O
-		}
+		
+		direction r = checkSides(x,y,max);
+
+		max = r.h;
 
 		if(get(x,y) == max){
 			break;
 		}
 
-		cout << d;
-		x = i;
-		y = j;
+		if(r.d == 0){
+			cout << "N";
+		}else if(r.d == 1){
+			cout << "L";	
+		}else if(r.d == 2){
+			cout << "S";
+		}else if(r.d == 3){
+			cout << "O";
+		}
+
+		x = r.x;
+		y = r.y;
 	}
 	cout <<"="<<max << endl;
 }
