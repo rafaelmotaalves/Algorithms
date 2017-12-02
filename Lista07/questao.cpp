@@ -24,8 +24,6 @@ struct direction
 	int x;
 	int y;
 	string path;
-	int xa = 0;
-	int ya = 0;
 };
 
 class Mapa{
@@ -42,7 +40,6 @@ Mapa(int s){
 		lab[i] = new cell[s];
 	}
 }
-
 
 void insertHeight(int x, int y, int h){
 	lab[x][y].h = h;
@@ -73,7 +70,7 @@ bool getWall(int x, int y, int p){
 		}
 		return (lab[abs(y-size+1)][x].n);		
 	}else if(p == 1){
-		if(x+1 >= size){
+		if(x+1 >= size ){
 			return false;
 		}
 		return (lab[abs(y-size+1)][x].l);
@@ -90,70 +87,50 @@ bool getWall(int x, int y, int p){
 	}
 }
 
-
-direction checkSides(int x,int y,int max){
-	int i,j;
-	string d;
-	i = x;
-	j = y;
-	if(get(x,y+1) > max && getWall(x,y,0)){
-		i = x;
-		j = y+1;
-		d = "N";
-		max = get(x,y+1);
-		//N
-	}
-	if(get(x+1,y) > max && getWall(x,y,1)){
-		i = x+1;
-		j = y;
-		d = "L";
-		max = get(x+1,y);
-		//L
-	}
-	if(get(x,y-1) > max && getWall(x,y,2)){
-		i = x;
-		j = y-1;
-		d = "S";
-		max = get(x,y-1);
-		//S
-	}
-	if(get(x-1,y) > max && getWall(x,y,3)){
-		i = x-1;
-		j = y;
-		d = "O";
-		max = get(x-1,y);
-		//O
-	}
-
-	direction r;
-	r.h = max;
-	r.x = i;
-	r.y = j;
-	r.path = d;
-
-	return r;
-}
-
 void greedy(int x, int y){
 	int max = 0;
 	while(true){
 		int i,j;
 		i = x;
 		j = y;
-		char d;
 		max = get(x,y);
-
-		direction r = checkSides(x,y,max);
-
-		max = r.h;
+		string d;
+		if(get(x,y+1) > max && getWall(x,y,0)){
+			i = x;
+			j = y+1;
+			d = "N";
+			max = get(x,y+1);
+			//N
+		}
+		if(get(x+1,y) > max && getWall(x,y,1)){
+			i = x+1;
+			j = y;
+			d = "L";
+			max = get(x+1,y);
+			//L
+		}
+		if(get(x,y-1) > max && getWall(x,y,2)){
+			i = x;
+			j = y-1;
+			d = "S";
+			max = get(x,y-1);
+			//S
+		}
+		if(get(x-1,y) > max && getWall(x,y,3)){
+			i = x-1;
+			j = y;
+			d = "O";
+			max = get(x-1,y);
+			//O
+		}
 
 		if(get(x,y) == max){
 			break;
 		}
 
-		cout << r.path;
-		x = r.x;
-		y = r.y;
+		cout << d;
+		x = i;
+		y = j;
 	}
 	cout <<"="<<max << endl;
 }
@@ -183,17 +160,40 @@ void print(){
 	}
 }
 
-direction greedy2(int x,int y,int r,direction max,int xa,int ya,string path){
+direction greedy3(int x, int y, direction max,string path,bool **p){
+	p[abs(y-size+1)][x] = 1;
+	if(get(x,y) > max.h){
+		max.h = get(x,y);
+		max.x = x;
+		max.y = y;
+		max.path = path;
+	}
+	if(getWall(x,y,0) && !p[abs(y-size+2)][x] ){
+		max = greedy3(x,y+1,max,path+"N",p);
+	}
+	if(getWall(x,y,1) && !p[abs(y-size+1)][x+1] ){
+		max = greedy3(x+1,y,max,path+"L",p);
+	}
+	if(getWall(x,y,2) && !p[abs(y-size)][x] ){
+		max = greedy3(x,y-1,max,path+"S",p);
+	}
+	if(getWall(x,y,3) && !p[abs(y-size+1)][x-1] ){
+		max = greedy3(x-1,y,max,path+"O",p);
+	}
+
+	return max;
+
+}
+
+direction* greedy2(int x,int y,int r,direction* max,int xa,int ya,string path){
 	if(r < 0){
 		return max;
 	}else{
-		if(get(x,y) > max.h){
-			max.h = get(x,y);
-			max.x = x;
-			max.y = y;
-			max.xa = xa;
-			max.ya = ya;
-			max.path = path;
+		if(get(x,y) > max->h){
+			max->h = get(x,y);
+			max->x = x;
+			max->y = y;
+			max->path = path;
 		}
 		if(getWall(x,y,0) &&  y+1 != ya){
 			max = greedy2(x,y+1,r-1,max,x,y,path+"N");
@@ -211,25 +211,21 @@ direction greedy2(int x,int y,int r,direction max,int xa,int ya,string path){
 	}
 }
 
-direction greedyDfs(int x,int y,int r){
-	direction max;
-	max.h = 0;
-	max.xa = x;
-	max.ya = x;
+void greedyDfs(int x,int y,int r){
+	direction *max = new direction();
+	max->h = 0;
 	int i , j;
 	while(true){
-		i = max.xa;
-		j = max.ya;
-		max = greedy2(x,y,r,max,i,j,"");
-		if(max.h == get(x,y)){
+		max = greedy2(x,y,r,max,-1,-1,"");
+		if(x == max->x && y == max->y){
 			break;
 		}
-		cout << max.path;
-		x = max.x;
-		y = max.y;
-	cout << "=" << max.h<<endl;
+		x = max->x;
+		y = max->y;
+		cout << max->path;
 	}
-	return max;
+	cout << "=" << max->h<<endl;
+	delete max;
 }
 
 
@@ -262,13 +258,33 @@ int main(){
 		m->insertWall(x1,y1,x2,y2);
 	}
 
-	direction max ;
-	max.h = -1;
-	int x,y;
-	m->print();
-	while(true){
-		scanf("%d %d",&x,&y);
-		m->greedyDfs(x,y,4);
+
+	int r;
+	scanf("%d",&r);
+
+
+	int x,y,z;
+
+	bool **p = new bool*[size];
+	for (int i = 0; i < size; i++){
+		p[i] = new bool[size];
 	}
+
+	scanf("%d",&z);
+	for(int i= 0 ; i < z; i++){
+		direction max ;
+		max.h = -1;
+		scanf("%d %d",&x,&y);
+		cout << "caso " << i << ":" << endl;
+		m->greedy(x,y);
+		m->greedyDfs(x,y,r);
+		max = m->greedy3(x,y,max,"",p);
+		cout << max.path <<"=" << max.h << endl << endl;
+		for (int i = 0; i < size; ++i){
+			for (int j = 0; j < size; j++){
+				p[i][j] = 0;
+			}
+		}
+	 }
 	return 0;
 }
