@@ -24,6 +24,8 @@ struct direction
 	int x;
 	int y;
 	string path;
+	bool **p;
+
 };
 
 class Mapa{
@@ -46,7 +48,6 @@ void insertHeight(int x, int y, int h){
 }
 
 void insertWall(int x1,int y1, int x2, int y2){
-
 	if(y1-size+1 == y2-size+1){
 		lab[abs(y1-size+1)][x1].l = 0;
 		lab[abs(y2-size+1)][x2].o = 0;
