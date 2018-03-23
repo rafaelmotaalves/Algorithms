@@ -39,28 +39,19 @@ void qSort(int v[] , int l , int r){
 	}
 }
 
-int partition(int v[] , int l , int r){
-	int p = (l+r)/2;
-	int aux = v[l];
-	v[l] = v[p];
-	v[p] = v[l];
-	int i = l;
-	int j = r;
-	while(i < j){
-		while(i<=r && v[i] <= v[l]){
-			i++;
-		}
-		while(v[j] > v[l]){
-			j--;
-		}
-		if(i<j){
-			aux = v[i];
-			v[i] = v[j];
-			v[j] = aux;
-		}
-	}
-	aux = v[l];
-	v[l] = v[j];
-	v[j] = aux;
-	return j;
-} 
+int partition(int v[], int p, int r) {
+    int x = v[r];
+    int i = p-1;
+    for(int j = p; j <= r-1; j++) {
+        if(v[j] <= x) {
+            i += 1;
+            int aux = v[i];
+            v[i] = v[j];
+            v[j] = aux;
+        }
+    }
+    int aux = v[i+1];
+    v[i+1] = v[r];
+   	v[r] = aux;
+    return i+1;
+}
